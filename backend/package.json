@@ -1,4 +1,14 @@
 {
+  "name": "telephonum-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Telephonum",
+  "private": true,
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bullmq": "^5.79.3",
