@@ -1,75 +1,183 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import api from "../../services/api";
+import logo from "../../assets/logo.png";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-const handleRegister = async (
-  event: React.FormEvent<HTMLFormElement>
-) => {
-  event.preventDefault();
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  try {
-    const response = await api.post("/auth/register", {
-      name,
-      email,
-      password,
-    });
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+    setIsLoading(true);
+
+    try {
+      const response = await api.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
+
+      console.log(response.data);
+      alert("Registration Successful");
+    } catch (error) {
+      console.error(error);
+      alert("Registration Failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className="relative min-h-screen bg-[#030014] text-gray-100 flex flex-col justify-center items-center px-4 overflow-hidden py-12">
+      {/* Background glow effects */}
+      <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
 
-      <form onSubmit={handleRegister}>
-        <div>
-          <label>Name</label>
-          <br />
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+      {/* Main card */}
+      <motion.div 
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-[440px] z-10"
+      >
+        <div className="glass-effect p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+          {/* Logo */}
+          <Link to="/" className="flex flex-col items-center gap-1.5 mb-8 group">
+            <img src={logo} alt="Telephonum AI Logo" className="h-12 w-auto group-hover:scale-105 transition-transform duration-300" />
+            <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent tracking-tight">
+              Telephonum
+            </span>
+          </Link>
+
+          <h2 className="text-2xl font-bold text-white text-center tracking-tight mb-1">
+            Create Account
+          </h2>
+          <p className="text-gray-400 text-sm text-center mb-8">
+            Get started with Telephonum today
+          </p>
+
+          <form onSubmit={handleRegister} className="flex flex-col gap-4.5">
+            {/* Name Field */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name-input" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                  <User className="h-4.5 w-4.5" />
+                </div>
+                <input
+                  id="name-input"
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Email Field */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email-input" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                  <Mail className="h-4.5 w-4.5" />
+                </div>
+                <input
+                  id="email-input"
+                  type="email"
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password-input" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                  <Lock className="h-4.5 w-4.5" />
+                </div>
+                <input
+                  id="password-input"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirm-password-input" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                  <Lock className="h-4.5 w-4.5" />
+                </div>
+                <input
+                  id="confirm-password-input"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_15px_rgba(99,102,241,0.25)] hover:shadow-[0_0_20px_rgba(99,102,241,0.45)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+              {!isLoading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+            </button>
+          </form>
+
+          <div className="relative flex py-5 items-center">
+            <div className="flex-grow border-t border-white/5"></div>
+            <span className="flex-shrink mx-4 text-gray-500 text-xs font-semibold uppercase tracking-wider">or</span>
+            <div className="flex-grow border-t border-white/5"></div>
+          </div>
+
+          <p className="text-center text-sm text-gray-400">
+            Already have an account?{" "}
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+              Sign In
+            </Link>
+          </p>
         </div>
-
-        <br />
-
-        <div>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <br />
-
-        <div>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <br />
-
-        <button type="submit">Register</button>
-      </form>
+      </motion.div>
     </div>
   );
 };
