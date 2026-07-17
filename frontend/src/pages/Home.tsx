@@ -62,9 +62,9 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed mb-10"
+            className="text-gray-400 text-lg sm:text-xl max-w-3xl leading-relaxed mb-10"
           >
-            Understand customer sentiment, agent response performance, and key topic clusters automatically using our production-ready AI conversation intelligence engine.
+            Telephonum helps businesses transform customer conversations into actionable insights with AI-powered transcription, sentiment analysis, quality scoring, compliance monitoring, and intelligent coaching—all in one platform.
           </motion.p>
 
           {/* CTAs */}
