@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { loginUser } from "../../services/auth.services";
-import logo from "../../assets/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,7 +47,6 @@ const Login = () => {
         <div className="glass-effect p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
           {/* Logo */}
           <Link to="/" className="flex flex-col items-center gap-1.5 mb-8 group">
-            <img src={logo} alt="Telephonum AI Logo" className="h-12 w-auto group-hover:scale-105 transition-transform duration-300" />
             <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent tracking-tight">
               Telephonum
             </span>

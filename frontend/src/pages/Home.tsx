@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
-import logo from "../assets/logo.png";
 
 const Home = () => {
   return (
@@ -14,7 +13,6 @@ const Home = () => {
       <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#030014]/65 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight hover:opacity-90 transition-opacity">
-            <img src={logo} alt="Telephonum AI Logo" className="h-9 w-auto" />
             <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Telephonum</span>
           </Link>
 
@@ -97,7 +95,6 @@ const Home = () => {
       <footer className="w-full border-t border-white/5 bg-[#030014]/80 backdrop-blur-md py-12 z-10">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Telephonum AI Logo" className="h-6 w-auto" />
             <span className="font-semibold text-white text-sm">Telephonum AI</span>
           </div>
           <div className="text-xs text-gray-500">
