@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { loginUser } from "../../services/auth.services";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,11 +22,12 @@ const Login = () => {
       });
 
       console.log("Login Successful");
-      alert("Login Successful");
+      toast.success("Login Successful!");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login Failed", error);
-      alert("Login Failed");
+      const errorMessage = error.response?.data?.message || "Login Failed";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -33,7 +35,8 @@ const Login = () => {
 
   return (
     <div className="relative min-h-screen bg-[#030014] text-gray-100 flex flex-col justify-center items-center px-4 overflow-hidden">
-      {/* Background glow effects */}
+      {/* Background glow effects & grid */}
+      <div className="bg-grid-pattern" />
       <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
 

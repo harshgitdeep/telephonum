@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +17,7 @@ const Register = () => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
@@ -29,10 +31,12 @@ const Register = () => {
       });
 
       console.log(response.data);
-      alert("Registration Successful");
-    } catch (error) {
+      toast.success("Account created successfully!");
+      navigate("/login");
+    } catch (error: any) {
       console.error(error);
-      alert("Registration Failed");
+      const errorMessage = error.response?.data?.message || "Registration Failed";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +44,8 @@ const Register = () => {
 
   return (
     <div className="relative min-h-screen bg-[#030014] text-gray-100 flex flex-col justify-center items-center px-4 overflow-hidden py-12">
-      {/* Background glow effects */}
+      {/* Background glow effects & grid */}
+      <div className="bg-grid-pattern" />
       <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
 
