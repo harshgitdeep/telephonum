@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Phone, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import logo from "../../assets/logo.svg";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -20,8 +21,8 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-white/5 bg-slate-50/75 dark:bg-[#030014]/65 backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 text-lg font-bold tracking-tight hover:opacity-90 transition-opacity">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.4)] dark:shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-            <Phone className="w-4.5 h-4.5 text-white" />
+          <div className="w-10 h-10 flex items-center justify-center dark:bg-white dark:rounded-lg transition-all duration-200">
+            <img src={logo} alt="Telephonum Logo" className="w-8 h-8 object-contain" />
           </div>
           <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 dark:from-white dark:via-gray-200 dark:to-gray-400 bg-clip-text text-transparent">
             Telephonum

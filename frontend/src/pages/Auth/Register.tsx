@@ -6,6 +6,7 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
+import logo from "../../assets/logo.svg";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,28 +16,27 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match!");
-      return;
+      return toast.error("Passwords do not match");
     }
 
     setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/register", {
+      await api.post("/auth/register", {
         name,
         email,
         password,
       });
 
-      console.log(response.data);
-      toast.success("Account created successfully!");
+      console.log("Registration Successful");
+      toast.success("Account Created Successfully!");
       navigate("/login");
     } catch (error: any) {
-      console.error(error);
+      console.error("Registration Failed", error);
       const errorMessage = error.response?.data?.message || "Registration Failed";
       toast.error(errorMessage);
     } finally {
@@ -63,7 +63,8 @@ const Register = () => {
         >
           <div className="glass-effect p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
             {/* Logo */}
-            <Link to="/" className="flex flex-col items-center gap-1.5 mb-8 group">
+            <Link to="/" className="flex items-center gap-2.5 mb-8 justify-center group">
+              <img src={logo} alt="Telephonum Logo" className="w-6.5 h-6.5 object-contain" />
               <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent tracking-tight">
                 Telephonum
               </span>

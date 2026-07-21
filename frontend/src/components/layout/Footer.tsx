@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Phone } from "lucide-react";
+import logo from "../../assets/logo.svg";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -20,9 +20,6 @@ const Footer = () => {
         {/* Logo & Pitch */}
         <div className="lg:col-span-5 flex flex-col items-start gap-4">
           <Link to="/" className="flex items-center gap-2.5 text-lg font-bold tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center">
-              <Phone className="w-4.5 h-4.5 text-white" />
-            </div>
             <span className="text-slate-900 dark:text-white">Telephonum</span>
           </Link>
           <p className="text-slate-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm text-left">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -27,8 +27,8 @@ import Footer from "../components/layout/Footer";
 const MOCK_CALLS = [
   {
     id: "call-1",
-    agentName: "Alex Mercer",
-    customerName: "Sarah Jenkins",
+    agentName: "Amit Sharma",
+    customerName: "Priya Patel",
     duration: "4m 32s",
     qaScore: 94,
     sentiment: "Positive",
@@ -47,88 +47,18 @@ const MOCK_CALLS = [
       { name: "Resolution confirmed", status: true }
     ],
     transcript: [
-      { speaker: "Agent", text: "Thank you for calling Telephonum support. My name is Alex, how can I help you today?" },
-      { speaker: "Customer", text: "Hi Alex! I'm calling from Acme Corp. We've been using the Pro plan, but we've run out of credits and need to upgrade to the Enterprise plan." },
-      { speaker: "Agent", text: "I can absolutely help you with that, Sarah. Let me pull up your account. Could you please confirm your registered email address?" },
-      { speaker: "Customer", text: "Sure, it is sarah.jenkins@acmecorp.com." },
+      { speaker: "Agent", text: "Thank you for calling Telephonum support. My name is Amit, how can I help you today?" },
+      { speaker: "Customer", text: "Hi Amit! I'm calling from Acme Corp. We've been using the Pro plan, but we've run out of credits and need to upgrade to the Enterprise plan." },
+      { speaker: "Agent", text: "I can absolutely help you with that, Priya. Let me pull up your account. Could you please confirm your registered email address?" },
+      { speaker: "Customer", text: "Sure, it is priya.patel@acmecorp.com." },
       { speaker: "Agent", text: "Got it, thank you. I see your Acme Corp workspace has 25 active seats. The Enterprise upgrade will add unlimited credits and advanced custom dashboard metrics. The rate will be $49 per user monthly. Does that sound good to go ahead?" },
       { speaker: "Customer", text: "Yes, that's exactly what we need. Please go ahead and process it." },
       { speaker: "Agent", text: "Perfect. I've initiated the upgrade. You should see the new features and unlimited credits in your dashboard right now. I've also sent the invoice copy to your email." },
-      { speaker: "Customer", text: "Wow, that was incredibly fast. Thank you so much, Alex!" },
-      { speaker: "Agent", text: "You're very welcome, Sarah! Is there anything else I can assist you with today?" },
+      { speaker: "Customer", text: "Wow, that was incredibly fast. Thank you so much, Amit!" },
+      { speaker: "Agent", text: "You're very welcome, Priya! Is there anything else I can assist you with today?" },
       { speaker: "Customer", text: "No, that's all. Have a great day!" }
     ],
     metrics: { tone: 9.8, clarity: 9.4, compliance: 10 }
-  },
-  {
-    id: "call-2",
-    agentName: "Emily Davis",
-    customerName: "Mark Reynolds",
-    duration: "6m 15s",
-    qaScore: 78,
-    sentiment: "Negative",
-    date: "Today, 1:45 PM",
-    complianceScore: "75%",
-    summary: "Customer was frustrated about a billing discrepancy. The bill showed a charge of $150 instead of the promised promo rate of $99. The agent struggled initially to locate the promo code, leading to long pauses. The dispute was resolved, but the customer experience was impacted.",
-    coachingTips: [
-      "Reduce silence/hold times by explaining what you are searching for.",
-      "Acknowledge the customer's frustration earlier to build empathy.",
-      "Follow up with email confirmation of the credit adjustment."
-    ],
-    complianceChecks: [
-      { name: "Standard greeting used", status: true },
-      { name: "Verbal consent obtained", status: true },
-      { name: "Pricing terms disclosed", status: false },
-      { name: "Resolution confirmed", status: true }
-    ],
-    transcript: [
-      { speaker: "Agent", text: "Telephonum Customer Support, this is Emily. How may I assist you?" },
-      { speaker: "Customer", text: "Hi, I have a major issue. My invoice this month is $150, but I was promised a promo rate of $99 for the first six months. This is very frustrating." },
-      { speaker: "Agent", text: "Oh, I'm sorry to hear that. Let me look into this. Can I have your account ID?" },
-      { speaker: "Customer", text: "It's TP-90284. It should be under Mark Reynolds." },
-      { speaker: "Agent", text: "One moment... (long silence) ... I'm searching for the promo code. It's taking a bit of time." },
-      { speaker: "Customer", text: "Are you still there? This is taking too long." },
-      { speaker: "Agent", text: "Yes, sorry, the system is slow. Ah, I see. The promo code 'TEL99' was not applied to the renewal invoice. I will apply a credit of $51 to your account now." },
-      { speaker: "Customer", text: "Okay, will that credit reflect on my card or just the account?" },
-      { speaker: "Agent", text: "It will be applied as credit for your next month's invoice." },
-      { speaker: "Customer", text: "Fine. Just make sure it doesn't happen again." },
-      { speaker: "Agent", text: "I will make sure. Thank you." }
-    ],
-    metrics: { tone: 7.2, clarity: 8.0, compliance: 7.5 }
-  },
-  {
-    id: "call-3",
-    agentName: "Robert Chen",
-    customerName: "Julia K.",
-    duration: "3m 50s",
-    qaScore: 88,
-    sentiment: "Neutral",
-    date: "Today, 11:30 AM",
-    complianceScore: "100%",
-    summary: "Customer inquired about integrating Telephonum with their HubSpot CRM. The agent provided clear documentation links and walked the customer through the HubSpot integrations panel in settings. The setup was completed successfully during the call.",
-    coachingTips: [
-      "Good step-by-step guidance on CRM setup.",
-      "Try to mention that Salesforce integrations are also available.",
-      "Overall solid call, friendly and helpful tone."
-    ],
-    complianceChecks: [
-      { name: "Standard greeting used", status: true },
-      { name: "Verbal consent obtained", status: true },
-      { name: "Pricing terms disclosed", status: true },
-      { name: "Resolution confirmed", status: true }
-    ],
-    transcript: [
-      { speaker: "Agent", text: "Hello, thank you for calling Telephonum. This is Robert. How can I help you today?" },
-      { speaker: "Customer", text: "Hi Robert. I am setting up our account and I need to know how to connect it with HubSpot. Is that supported?" },
-      { speaker: "Agent", text: "Yes, it is! We have a native HubSpot integration. If you are logged in, go to Settings, then click on the Integrations tab." },
-      { speaker: "Customer", text: "Okay, I see the Integrations tab... and I see the HubSpot logo." },
-      { speaker: "Agent", text: "Perfect. Just click 'Connect', and it will prompt you to authenticate your HubSpot account. That will sync all your recorded calls automatically." },
-      { speaker: "Customer", text: "Got it, I clicked Connect and logged in. Yes! It says Connected now. That was super easy." },
-      { speaker: "Agent", text: "Excellent! You are all set. Is there anything else I can help you with?" },
-      { speaker: "Customer", text: "No, that was it. Thanks for the quick support, Robert!" },
-      { speaker: "Agent", text: "My pleasure, Julia. Have a great day!" }
-    ],
-    metrics: { tone: 9.0, clarity: 9.2, compliance: 10 }
   }
 ];
 
@@ -136,6 +66,49 @@ const Home = () => {
   const [selectedCallIndex, setSelectedCallIndex] = useState(0);
   const activeCall = MOCK_CALLS[selectedCallIndex];
   const location = useLocation();
+
+  const transcriptRef = useRef<HTMLDivElement>(null);
+  const [isScrollingPaused, setIsScrollingPaused] = useState(false);
+  const scrollPosRef = useRef(0);
+
+  useEffect(() => {
+    const container = transcriptRef.current;
+    if (!container) return;
+
+    let frameId: number;
+    let lastTime = performance.now();
+
+    const scroll = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (!isScrollingPaused) {
+        // Slow scroll speed: 10 pixels per second
+        scrollPosRef.current += (10 * delta) / 1000;
+
+        // Loop: if scrolled past scrollHeight minus clientHeight, go back to top
+        if (scrollPosRef.current + container.clientHeight >= container.scrollHeight - 2) {
+          scrollPosRef.current = 0;
+        }
+
+        container.scrollTop = scrollPosRef.current;
+      }
+
+      frameId = requestAnimationFrame(scroll);
+    };
+
+    frameId = requestAnimationFrame(scroll);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [isScrollingPaused]);
+
+  const handleTranscriptScroll = () => {
+    if (transcriptRef.current && isScrollingPaused) {
+      scrollPosRef.current = transcriptRef.current.scrollTop;
+    }
+  };
 
   // Scroll to section when navigated from another page
   useEffect(() => {
@@ -452,14 +425,14 @@ const Home = () => {
             Interactive Analytics Dashboard Preview
           </h2>
           <p className="text-slate-600 dark:text-gray-400 text-lg">
-            Interact with our live preview widget below. Click on different recent calls to inspect details dynamically.
+            Interact with our live preview widget below. Inspect the sample call details dynamically.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Recent Conversations List (Left Side) */}
           <div className="lg:col-span-4 flex flex-col gap-4">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white text-left uppercase tracking-wider mb-2">Recent Conversations</h3>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white text-left uppercase tracking-wider mb-2">Sample Calls</h3>
             {MOCK_CALLS.map((call, idx) => (
               <button
                 key={call.id}
@@ -588,7 +561,27 @@ const Home = () => {
                       <ListTodo className="w-3.5 h-3.5 text-pink-500 dark:text-pink-400" />
                       <span>Interactive Transcript</span>
                     </h4>
-                    <div className="bg-slate-50/80 dark:bg-[#040310] border border-slate-150 dark:border-white/5 p-4 rounded-2xl h-[280px] overflow-y-auto flex flex-col gap-3 custom-scrollbar">
+                    <div 
+                      ref={transcriptRef}
+                      onMouseEnter={() => setIsScrollingPaused(true)}
+                      onMouseLeave={() => {
+                        if (transcriptRef.current) {
+                          scrollPosRef.current = transcriptRef.current.scrollTop;
+                        }
+                        setIsScrollingPaused(false);
+                      }}
+                      onTouchStart={() => setIsScrollingPaused(true)}
+                      onTouchEnd={() => {
+                        if (transcriptRef.current) {
+                          scrollPosRef.current = transcriptRef.current.scrollTop;
+                        }
+                        setTimeout(() => {
+                          setIsScrollingPaused(false);
+                        }, 1500);
+                      }}
+                      onScroll={handleTranscriptScroll}
+                      className="bg-slate-50/80 dark:bg-[#040310] border border-slate-150 dark:border-white/5 p-4 rounded-2xl h-[280px] overflow-y-auto flex flex-col gap-3 custom-scrollbar"
+                    >
                       {activeCall.transcript.map((line, idx) => (
                         <div key={idx} className={`flex flex-col ${line.speaker === "Agent" ? "items-start" : "items-end"}`}>
                           <span className={`text-[9px] font-semibold mb-0.5 uppercase tracking-widest ${
