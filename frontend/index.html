@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/src/assets/favicon.png" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem("theme");
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const isDark = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+          document.querySelector('meta[name="color-scheme"]').content = "dark";
+        } else {
+          document.documentElement.classList.remove("dark");
+          document.querySelector('meta[name="color-scheme"]').content = "light";
+        }
+      })();
+    </script>
     <title>Telephonum AI</title>
   </head>
   <body>
