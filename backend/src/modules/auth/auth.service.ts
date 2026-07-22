@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "./auth.model";
+import { generateToken } from "../../utils/jwt";
 
 export const registerUser = async (userData: any) => {
   const { name, email, password } = userData;
@@ -41,8 +42,8 @@ export const loginUser = async (userData: any) => {
   }
 
   const isPasswordCorrect = await bcrypt.compare(
-  password,
-  user.password
+    password,
+    user.password
   );
 
   if (!isPasswordCorrect) {
@@ -52,9 +53,19 @@ export const loginUser = async (userData: any) => {
     };
   }
 
+  const token = generateToken({
+    userId: user._id.toString(),
+    email: user.email,
+  });
+
   return {
     success: true,
     message: "Login successful",
-    data: user,
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
   };
 };

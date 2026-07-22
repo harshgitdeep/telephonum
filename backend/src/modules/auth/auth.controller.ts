@@ -1,6 +1,23 @@
 import { Request, Response } from "express";
 import { registerUser, loginUser } from "./auth.service";
 
+export const getMe = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    res.status(200).json({
+      success: true,
+      user: req.user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
 export const register = async (req: Request, res: Response) => {
   try {
     const result = await registerUser(req.body);
