@@ -66,23 +66,6 @@ const MOCK_CALLS = [
 const Home = () => {
   const { user, loading } = useAuth();
 
-  console.log("User:", user);
-  console.log("Loading:", loading);
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-[#030014] transition-colors duration-300">
-        <div className="relative flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full border-4 border-indigo-200 dark:border-indigo-500/10 border-t-indigo-600 dark:border-t-indigo-500 animate-spin"></div>
-          <div className="absolute w-20 h-20 rounded-full border border-indigo-500/20 dark:border-indigo-500/30 animate-ping opacity-40"></div>
-        </div>
-        <p className="mt-6 text-sm font-semibold tracking-wide text-slate-500 dark:text-indigo-200/60 animate-pulse">
-          Loading Telephonum...
-        </p>
-      </div>
-    );
-  }
-
   const [selectedCallIndex, setSelectedCallIndex] = useState(0);
   const activeCall = MOCK_CALLS[selectedCallIndex];
   const location = useLocation();
@@ -124,12 +107,6 @@ const Home = () => {
     };
   }, [isScrollingPaused]);
 
-  const handleTranscriptScroll = () => {
-    if (transcriptRef.current && isScrollingPaused) {
-      scrollPosRef.current = transcriptRef.current.scrollTop;
-    }
-  };
-
   // Scroll to section when navigated from another page
   useEffect(() => {
     if (location.state && (location.state as any).scrollTo) {
@@ -144,6 +121,26 @@ const Home = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location]);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-[#030014] transition-colors duration-300">
+        <div className="relative flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full border-4 border-indigo-200 dark:border-indigo-500/10 border-t-indigo-600 dark:border-t-indigo-500 animate-spin"></div>
+          <div className="absolute w-20 h-20 rounded-full border border-indigo-500/20 dark:border-indigo-500/30 animate-ping opacity-40"></div>
+        </div>
+        <p className="mt-6 text-sm font-semibold tracking-wide text-slate-500 dark:text-indigo-200/60 animate-pulse">
+          Loading Telephonum...
+        </p>
+      </div>
+    );
+  }
+
+  const handleTranscriptScroll = () => {
+    if (transcriptRef.current && isScrollingPaused) {
+      scrollPosRef.current = transcriptRef.current.scrollTop;
+    }
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -201,13 +198,15 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
           >
-            <Link 
-              to="/register" 
-              className="px-6 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-center justify-center gap-2 group text-center"
-            >
-              Get Started
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            {!user && (
+              <Link 
+                to="/register" 
+                className="px-6 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-center justify-center gap-2 group text-center"
+              >
+                Get Started
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
             <button 
               onClick={() => scrollToSection("dashboard-showcase")}
               className="px-6 py-3.5 rounded-xl font-bold text-slate-700 dark:text-gray-300 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-200/80 dark:hover:bg-white/10 hover:border-slate-300/80 dark:hover:border-white/20 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
@@ -702,13 +701,15 @@ const Home = () => {
             <p className="text-slate-600 dark:text-gray-305 text-base md:text-lg leading-relaxed max-w-2xl">
               Start using Telephonum to analyze conversations, improve customer experience, and empower your teams with AI.
             </p>
-            <Link 
-              to="/register" 
-              className="mt-4 px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-center justify-center gap-2 group"
-            >
-              Create Free Account
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            {!user && (
+              <Link 
+                to="/register" 
+                className="mt-4 px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-center justify-center gap-2 group"
+              >
+                Create Free Account
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
           </div>
         </div>
       </section>

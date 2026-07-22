@@ -1,10 +1,12 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/logo.svg";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -64,15 +66,34 @@ const Navbar = () => {
           >
             {theme === "dark" ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
           </button>
-          <Link to="/login" className="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">
-            Login
-          </Link>
-          <Link 
-            to="/register" 
-            className="relative group px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_15px_rgba(99,102,241,0.15)] dark:shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_20px_rgba(99,102,241,0.35)] dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.55)]"
-          >
-            Sign Up
-          </Link>
+          {user ? (
+            <>
+              <span className="text-sm font-medium text-slate-700 dark:text-gray-300">
+                Hi, {user.name || user.email}
+              </span>
+              <button 
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
+                className="text-sm font-semibold text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors cursor-pointer"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">
+                Login
+              </Link>
+              <Link 
+                to="/register" 
+                className="relative group px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_15px_rgba(99,102,241,0.15)] dark:shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_20px_rgba(99,102,241,0.35)] dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.55)]"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
