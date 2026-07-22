@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
+import { useAuth } from "../context/AuthContext";
 
 // Mock data for interactive Dashboard Showcase
 const MOCK_CALLS = [
@@ -63,6 +64,25 @@ const MOCK_CALLS = [
 ];
 
 const Home = () => {
+  const { user, loading } = useAuth();
+
+  console.log("User:", user);
+  console.log("Loading:", loading);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-[#030014] transition-colors duration-300">
+        <div className="relative flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full border-4 border-indigo-200 dark:border-indigo-500/10 border-t-indigo-600 dark:border-t-indigo-500 animate-spin"></div>
+          <div className="absolute w-20 h-20 rounded-full border border-indigo-500/20 dark:border-indigo-500/30 animate-ping opacity-40"></div>
+        </div>
+        <p className="mt-6 text-sm font-semibold tracking-wide text-slate-500 dark:text-indigo-200/60 animate-pulse">
+          Loading Telephonum...
+        </p>
+      </div>
+    );
+  }
+
   const [selectedCallIndex, setSelectedCallIndex] = useState(0);
   const activeCall = MOCK_CALLS[selectedCallIndex];
   const location = useLocation();

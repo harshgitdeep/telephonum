@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight } from "lucide-react";
@@ -13,6 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { login } = useAuth();
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -23,13 +26,16 @@ const Login = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
-      
+      await login(response.data.token);
+
       toast.success("Login Successful!");
       navigate("/");
     } catch (error: any) {
       console.error("Login Failed", error);
-      const errorMessage = error.response?.data?.message || "Login Failed";
+
+      const errorMessage =
+        error.response?.data?.message || "Login Failed";
+
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

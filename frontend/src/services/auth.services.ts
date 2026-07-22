@@ -14,3 +14,11 @@ export const loginUser = (data: {
 }) => {
   return api.post("/auth/login", data);
 };
+
+export const getCurrentUser = async () => {
+    return api.get("/auth/me", {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+};

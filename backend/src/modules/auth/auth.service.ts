@@ -56,6 +56,7 @@ export const loginUser = async (userData: any) => {
   const token = generateToken({
     userId: user._id.toString(),
     email: user.email,
+    name: user.name,
   });
 
   return {
