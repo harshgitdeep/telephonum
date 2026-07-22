@@ -6,7 +6,6 @@ import { loginUser } from "../../services/auth.services";
 import { toast } from "react-toastify";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
-import logo from "../../assets/logo.svg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -55,14 +54,6 @@ const Login = () => {
           className="w-full max-w-[420px] z-10"
         >
           <div className="glass-effect p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 mb-8 justify-center group">
-              <img src={logo} alt="Telephonum Logo" className="w-6.5 h-6.5 object-contain" />
-              <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent tracking-tight">
-                Telephonum
-              </span>
-            </Link>
-
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center tracking-tight mb-1">
               Welcome Back
             </h2>
