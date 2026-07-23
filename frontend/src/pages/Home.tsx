@@ -23,6 +23,7 @@ import {
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { useAuth } from "../context/AuthContext";
+import Dashboard from "./Dashboard/Dashboard";
 
 // Mock data for interactive Dashboard Showcase
 const MOCK_CALLS = [
@@ -134,6 +135,10 @@ const Home = () => {
         </p>
       </div>
     );
+  }
+
+  if (user) {
+    return <Dashboard />;
   }
 
   const handleTranscriptScroll = () => {

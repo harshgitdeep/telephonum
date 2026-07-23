@@ -30,8 +30,7 @@ const Register = () => {
         email,
         password,
       });
-
-      console.log("Registration Successful");
+      
       toast.success("Account Created Successfully!");
       navigate("/login");
     } catch (error: any) {
