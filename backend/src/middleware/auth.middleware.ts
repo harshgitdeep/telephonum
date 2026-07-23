@@ -37,10 +37,10 @@ export const authenticate = async (
 
     // 6. Attach user to request
     req.user = {
-    userId: user._id.toString(),
-    email: user.email,
-    name: user.name,
-};
+      userId: user._id.toString(),
+      email: user.email,
+      name: user.name,
+    };
 
     // 7. Continue
     next();

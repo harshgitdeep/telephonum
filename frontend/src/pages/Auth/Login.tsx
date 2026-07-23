@@ -27,8 +27,6 @@ const Login = () => {
       });
 
       await login(response.data.token);
-
-      toast.success("Login Successful!");
       navigate("/");
     } catch (error: any) {
       console.error("Login Failed", error);
@@ -95,9 +93,9 @@ const Login = () => {
                   <label htmlFor="password-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
                     Password
                   </label>
-                  <a href="#forgot" className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline transition-colors">
+                  <Link to="/forgot-password" className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline transition-colors">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-gray-500">

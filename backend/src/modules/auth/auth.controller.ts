@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerUser, loginUser } from "./auth.service";
+import { registerUser, loginUser, forgotPasswordService, resetPasswordService, verifyOTPService } from "./auth.service";
 
 export const getMe = async (
   req: Request,
@@ -49,6 +49,72 @@ export const login = async (req: Request, res: Response) => {
     return res.status(200).json(result);
   } catch (error) {
     console.error("Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const forgotPasswordController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const result = await forgotPasswordService(req.body);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const resetPasswordController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const result = await resetPasswordService(req.body);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const verifyOTPController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const result = await verifyOTPService(req.body);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Verify OTP Error:", error);
 
     return res.status(500).json({
       success: false,
