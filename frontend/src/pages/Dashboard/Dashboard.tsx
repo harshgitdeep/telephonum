@@ -36,6 +36,63 @@ export default function Dashboard() {
     fetchCalls();
   }, []);
 
+  useEffect(() => {
+    const hasActiveProcessing = calls.some((c) => ["QUEUED", "TRANSCRIBING", "ANALYZING"].includes(c.status));
+    if (!hasActiveProcessing) return;
+
+    const interval = setInterval(() => {
+      const fetchCallsSilent = async () => {
+        try {
+          const response = await getCalls();
+          if (response.data.success) {
+            setCalls(response.data.data);
+          }
+        } catch (error) {
+          console.error("Failed to silently refresh calls:", error);
+        }
+      };
+      fetchCallsSilent();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [calls]);
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "QUEUED":
+        return {
+          label: "Waiting to Process",
+          colorClass: "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400 border border-yellow-200/50 dark:border-yellow-500/20",
+          dot: "🟡",
+        };
+      case "TRANSCRIBING":
+        return {
+          label: "Transcribing Audio...",
+          colorClass: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/50 dark:border-blue-500/20",
+          dot: "🔵",
+        };
+      case "ANALYZING":
+        return {
+          label: "Generating AI Insights...",
+          colorClass: "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400 border border-purple-200/50 dark:border-purple-500/20",
+          dot: "🟣",
+        };
+      case "COMPLETED":
+        return {
+          label: "Completed",
+          colorClass: "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 border border-green-200/50 dark:border-green-500/20",
+          dot: "🟢",
+        };
+      case "FAILED":
+      default:
+        return {
+          label: "Processing Failed",
+          colorClass: "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 border border-red-200/50 dark:border-red-500/20",
+          dot: "🔴",
+        };
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -253,12 +310,8 @@ export default function Dashboard() {
                     {calls.map((call) => (
                       <tr
                         key={call._id}
-                        onClick={() => call.status === "COMPLETED" && navigate(`/calls/${call._id}`)}
-                        className={`transition-colors ${
-                          call.status === "COMPLETED"
-                            ? "hover:bg-indigo-50/30 dark:hover:bg-indigo-500/5 cursor-pointer"
-                            : "hover:bg-slate-50/50 dark:hover:bg-white/2"
-                        }`}
+                        onClick={() => navigate(`/calls/${call._id}`)}
+                        className="transition-colors hover:bg-indigo-50/30 dark:hover:bg-indigo-500/5 cursor-pointer"
                       >
                         <td className="py-4 px-6 font-medium text-slate-900 dark:text-white truncate max-w-[200px]">
                           {call.originalFileName}
@@ -276,32 +329,25 @@ export default function Dashboard() {
                           </span>
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold ${
-                            call.status === "COMPLETED"
-                              ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                              : call.status === "TRANSCRIBING" || call.status === "PROCESSING"
-                              ? "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400"
-                              : call.status === "FAILED"
-                              ? "bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400"
-                              : "bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-gray-400"
-                          }`}>
-                            {call.status}
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-semibold ${getStatusConfig(call.status).colorClass}`}>
+                            {["QUEUED", "TRANSCRIBING", "ANALYZING"].includes(call.status) && (
+                              <span className="w-1.5 h-1.5 border border-current border-t-transparent rounded-full animate-spin"></span>
+                            )}
+                            <span>{getStatusConfig(call.status).dot} {getStatusConfig(call.status).label}</span>
                           </span>
                         </td>
                         <td className="py-4 px-6 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1.5">
-                            {call.status === "COMPLETED" && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/calls/${call._id}`);
-                                }}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
-                                title="View details"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/calls/${call._id}`);
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                              title="View details"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();

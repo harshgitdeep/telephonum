@@ -3,6 +3,7 @@ dotenv.config();
 
 import app from "./app";
 import { connectDatabase } from "./config/database";
+import "./workers/call-processing.worker";
 
 const PORT = process.env.PORT || 5001;
 

@@ -7,7 +7,16 @@ export interface CallData {
   storedFileName: string;
   mimeType: string;
   size: number;
-  status: "UPLOADED" | "TRANSCRIBING" | "PROCESSING" | "COMPLETED" | "FAILED";
+  status: "QUEUED" | "TRANSCRIBING" | "ANALYZING" | "COMPLETED" | "FAILED";
+  error?: string;
+  statusTimeline?: Array<{
+    status: string;
+    timestamp: string;
+    message: string;
+  }>;
+  systemDiagnostics?: {
+    redisConnected: boolean;
+  };
   createdAt: string;
   updatedAt: string;
   transcription?: {

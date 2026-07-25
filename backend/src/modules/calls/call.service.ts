@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import Call, { ICall, AIProvider } from "./call.model";
 import { UPLOAD_CONFIG } from "../../config/upload.config";
-import assemblyaiService from "../../services/assemblyai.service";
+import { addCallProcessingJob } from "../../queues/call-processing.queue";
 
 class CallService {
   async createCall(callData: {
@@ -17,11 +17,9 @@ class CallService {
 
   /**
    * Orchestrates the call processing lifecycle:
-   * 1. Creates Call in MongoDB (status: UPLOADED)
-   * 2. Sets status to TRANSCRIBING
-   * 3. Transcribes using AssemblyAI Service
-   * 4. Stores transcription and status COMPLETED (or FAILED with error)
-   * 5. Triggers post-transcription pipeline for future integrations (Gemini, etc.)
+   * 1. Creates Call in MongoDB (status: QUEUED)
+   * 2. Enqueues the processing job in BullMQ
+   * 3. Returns the created Call immediately
    */
   async processUploadedCall(
     userId: string,
@@ -36,36 +34,34 @@ class CallService {
       size: file.size,
     });
 
+    call.statusTimeline = [
+      {
+        status: "QUEUED",
+        timestamp: new Date(),
+        message: "Call record created. Queueing background processing job.",
+      },
+    ];
+    await call.save();
+
     try {
-      // 2. Update status to TRANSCRIBING
-      call.status = "TRANSCRIBING";
+      // 2. Queue the processing job in BullMQ
+      await addCallProcessingJob(call._id.toString());
+      call.statusTimeline.push({
+        status: "QUEUED",
+        timestamp: new Date(),
+        message: "Job enqueued successfully. Waiting for background worker to pick it up.",
+      });
       await call.save();
-
-      // 3. Call AssemblyAI Service
-      const result = await assemblyaiService.transcribeAudio(call.storedFileName);
-
-      // 4. Save transcription details and status COMPLETED
-      call.status = "COMPLETED";
-      call.transcription = {
-        transcriptId: result.transcriptId,
-        provider: AIProvider.ASSEMBLY_AI,
-        text: result.text,
-        language: result.language,
-        confidence: result.confidence,
-        duration: result.duration,
-        completedAt: new Date(),
-        utterances: result.utterances,
-      };
-      await call.save();
-
-      // 5. Trigger extensible pipeline for downstream tasks
-      await this.postTranscriptionPipeline(call);
-    } catch (error: any) {
-      console.error(`Transcription process failed for call ${call._id}:`, error);
+    } catch (queueError: any) {
+      console.error(`Failed to enqueue job for call ${call._id}:`, queueError);
       call.status = "FAILED";
-      call.error = error.message || "Unknown transcription error";
+      call.error = `Queue submission failed: ${queueError.message || queueError}. Make sure Redis is running.`;
+      call.statusTimeline.push({
+        status: "FAILED",
+        timestamp: new Date(),
+        message: `Queue submission failed. Redis is offline or unreachable.`,
+      });
       await call.save();
-      throw error;
     }
 
     return call;

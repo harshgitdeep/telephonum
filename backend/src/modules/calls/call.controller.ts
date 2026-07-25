@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import callService from "./call.service";
 import { getCallSchema, deleteCallSchema } from "./call.validation";
+import { callProcessingQueue } from "../../queues/call-processing.queue";
 
 // Call controller handling routing logic
 class CallController {
@@ -29,9 +30,9 @@ class CallController {
         file
       );
 
-      res.status(201).json({
+      res.status(202).json({
         success: true,
-        message: "Audio uploaded and processed successfully.",
+        message: "Audio uploaded successfully. Processing started in the background.",
         data: call,
       });
     } catch (error) {
@@ -100,9 +101,22 @@ class CallController {
         return;
       }
 
+      let redisConnected = false;
+      try {
+        const client = await callProcessingQueue.client;
+        redisConnected = client.status === "ready";
+      } catch (err) {
+        redisConnected = false;
+      }
+
       res.status(200).json({
         success: true,
-        data: call,
+        data: {
+          ...call.toObject(),
+          systemDiagnostics: {
+            redisConnected,
+          },
+        },
       });
     } catch (error) {
       next(error);

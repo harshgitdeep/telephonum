@@ -14,9 +14,9 @@ export default function CallDetail() {
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchCallDetails = async () => {
+  const fetchCallDetails = async (showLoading = true) => {
     if (!id) return;
-    setIsLoading(true);
+    if (showLoading) setIsLoading(true);
     try {
       const response = await getCall(id);
       if (response.data.success) {
@@ -30,13 +30,62 @@ export default function CallDetail() {
       toast.error(error.response?.data?.message || "Failed to load call details.");
       navigate("/");
     } finally {
-      setIsLoading(false);
+      if (showLoading) setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCallDetails();
+    fetchCallDetails(true);
   }, [id]);
+
+  useEffect(() => {
+    if (!call) return;
+    
+    const isProcessing = ["QUEUED", "TRANSCRIBING", "ANALYZING"].includes(call.status);
+    if (!isProcessing) return;
+
+    const interval = setInterval(() => {
+      fetchCallDetails(false);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [call?.status, id]);
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "QUEUED":
+        return {
+          label: "Waiting to Process",
+          colorClass: "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400 border border-yellow-200/50 dark:border-yellow-500/20",
+          dot: "🟡",
+        };
+      case "TRANSCRIBING":
+        return {
+          label: "Transcribing Audio...",
+          colorClass: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/50 dark:border-blue-500/20",
+          dot: "🔵",
+        };
+      case "ANALYZING":
+        return {
+          label: "Generating AI Insights...",
+          colorClass: "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400 border border-purple-200/50 dark:border-purple-500/20",
+          dot: "🟣",
+        };
+      case "COMPLETED":
+        return {
+          label: "Completed",
+          colorClass: "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 border border-green-200/50 dark:border-green-500/20",
+          dot: "🟢",
+        };
+      case "FAILED":
+      default:
+        return {
+          label: "Processing Failed",
+          colorClass: "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 border border-red-200/50 dark:border-red-500/20",
+          dot: "🔴",
+        };
+    }
+  };
 
   const handleCopy = () => {
     if (!call?.transcription?.text) return;
@@ -176,14 +225,11 @@ export default function CallDetail() {
                 <span className="text-2xs font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400">
                   Audio Record
                 </span>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-2xs font-semibold ${
-                  call.status === "COMPLETED"
-                    ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                    : call.status === "TRANSCRIBING" || call.status === "PROCESSING"
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
-                    : "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400"
-                }`}>
-                  {call.status}
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-semibold ${getStatusConfig(call.status).colorClass}`}>
+                  {["QUEUED", "TRANSCRIBING", "ANALYZING"].includes(call.status) && (
+                    <span className="w-1.5 h-1.5 border border-current border-t-transparent rounded-full animate-spin"></span>
+                  )}
+                  <span>{getStatusConfig(call.status).dot} {getStatusConfig(call.status).label}</span>
                 </span>
               </div>
               <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">
@@ -240,6 +286,64 @@ export default function CallDetail() {
           <div className="w-full bg-slate-50 dark:bg-[#030014]/50 border border-slate-100 dark:border-white/5 rounded-2xl p-4 flex flex-col gap-2">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400">Audio Player</p>
             <audio controls src={audioUrl} className="w-full h-10 mt-1 focus:outline-none" />
+          </div>
+        </div>
+
+        {/* System Diagnostics & Processing Logs */}
+        <div className="w-full p-6 md:p-8 rounded-3xl bg-white dark:bg-[#09081e]/60 border border-slate-200 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.02)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col gap-6 transition-all duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Shield className="w-5 h-5 text-indigo-500" />
+              System Diagnostics & Live Processing Logs
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500 dark:text-gray-400">Redis Connection:</span>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-3xs font-bold border ${
+                call.systemDiagnostics?.redisConnected
+                  ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 border-green-200/50 dark:border-green-500/20"
+                  : "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 border-red-200/50 dark:border-red-500/20"
+              }`}>
+                {call.systemDiagnostics?.redisConnected ? "🟢 Connected / Active" : "🔴 Disconnected / Offline"}
+              </span>
+            </div>
+          </div>
+
+          {!call.systemDiagnostics?.redisConnected && (
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-xs text-red-700 dark:text-red-400 leading-relaxed font-semibold">
+              ⚠️ Warning: Redis is currently offline! Start the Redis service to allow the background worker to process background jobs. 
+              <div className="mt-2 font-mono bg-red-100/50 dark:bg-red-950/20 p-2 rounded text-red-800 dark:text-red-300">
+                Run command: redis-server OR brew services start redis
+              </div>
+            </div>
+          )}
+
+          {/* Processing Timeline Logs */}
+          <div className="flex flex-col gap-4">
+            <p className="text-xs font-bold text-slate-500 dark:text-slate-400">Pipeline Timeline Logs</p>
+            <div className="relative border-l border-indigo-100 dark:border-white/10 pl-6 ml-3 flex flex-col gap-6 py-2">
+              {call.statusTimeline && call.statusTimeline.length > 0 ? (
+                call.statusTimeline.map((item, index) => {
+                  const cfg = getStatusConfig(item.status);
+                  return (
+                    <div key={index} className="relative flex flex-col gap-1">
+                      {/* Timeline Node Dot */}
+                      <span className="absolute -left-9 top-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-[#030014] border border-indigo-200 dark:border-white/10 shadow-sm text-xs">
+                        {cfg.dot}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-800 dark:text-gray-200">{cfg.label}</span>
+                        <span className="text-3xs text-slate-450 dark:text-slate-500 font-mono">
+                          {new Date(item.timestamp).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-gray-400">{item.message}</p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-xs text-slate-500 dark:text-gray-400">No log entries found.</div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -307,17 +411,33 @@ export default function CallDetail() {
                   No transcription text found.
                 </div>
               )
-            ) : call.status === "TRANSCRIBING" || call.status === "PROCESSING" ? (
+            ) : ["QUEUED", "TRANSCRIBING", "ANALYZING"].includes(call.status) ? (
               <div className="text-center py-14 flex flex-col items-center gap-3">
                 <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Transcription In Progress</h3>
+                <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">
+                  {call.status === "QUEUED"
+                    ? "Waiting to Process"
+                    : call.status === "TRANSCRIBING"
+                    ? "Transcription In Progress"
+                    : "Generating AI Insights"}
+                </h3>
                 <p className="text-xs text-slate-500 dark:text-gray-400 max-w-xs leading-relaxed">
-                  AssemblyAI is currently processing your recording. This page will update automatically once completed.
+                  {call.status === "QUEUED"
+                    ? "Your call has been queued and is waiting for processing."
+                    : call.status === "TRANSCRIBING"
+                    ? "AssemblyAI is currently transcribing your recording."
+                    : "AI models are analyzing the transcription."} This page will update automatically once completed.
                 </p>
               </div>
             ) : (
-              <div className="text-center py-10 text-red-500 dark:text-red-400">
-                Transcription processing failed. Check the recording details.
+              <div className="text-center py-10 text-red-500 dark:text-red-400 flex flex-col gap-2 items-center">
+                <Shield className="w-8 h-8 text-red-500" />
+                <h3 className="font-bold text-sm">Transcription processing failed.</h3>
+                {call.error && (
+                  <p className="text-xs bg-red-50 dark:bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-500/20 max-w-md select-text font-mono">
+                    Error Details: {call.error}
+                  </p>
+                )}
               </div>
             )}
           </div>

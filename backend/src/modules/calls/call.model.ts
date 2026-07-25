@@ -10,7 +10,7 @@ export interface ICall extends Document {
   storedFileName: string;
   mimeType: string;
   size: number;
-  status: "UPLOADED" | "TRANSCRIBING" | "COMPLETED" | "FAILED";
+  status: "QUEUED" | "TRANSCRIBING" | "ANALYZING" | "COMPLETED" | "FAILED";
   error?: string;
   transcription?: {
     transcriptId: string;
@@ -27,6 +27,11 @@ export interface ICall extends Document {
       end: number;
     }>;
   };
+  statusTimeline?: Array<{
+    status: string;
+    timestamp: Date;
+    message: string;
+  }>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,8 +45,8 @@ const callSchema = new Schema<ICall>(
     size: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["UPLOADED", "TRANSCRIBING", "COMPLETED", "FAILED"],
-      default: "UPLOADED",
+      enum: ["QUEUED", "TRANSCRIBING", "ANALYZING", "COMPLETED", "FAILED"],
+      default: "QUEUED",
     },
     error: {
       type: String,
@@ -64,6 +69,13 @@ const callSchema = new Schema<ICall>(
         },
       ],
     },
+    statusTimeline: [
+      {
+        status: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now },
+        message: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,
