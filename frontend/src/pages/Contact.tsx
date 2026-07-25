@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, PhoneCall, MapPin, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -111,44 +111,25 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-left">
               {/* Name field */}
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <label htmlFor="name-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
-                    Full Name
-                  </label>
-                  {user && (
-                    <span className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-100/50 dark:border-indigo-500/20">
-                      Account Verified
-                    </span>
-                  )}
-                </div>
+                <label htmlFor="name-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+                  Full Name
+                </label>
                 <input
                   id="name-input"
                   type="text"
                   placeholder="Harshdeep Singh"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  disabled={!!user}
-                  className={`block w-full px-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
-                    user
-                      ? "bg-slate-100/60 dark:bg-indigo-500/5 border border-indigo-200/40 dark:border-indigo-500/20 text-slate-500 dark:text-indigo-300/80 cursor-not-allowed select-none font-medium shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]"
-                      : "bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20"
-                  }`}
+                  className="block w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                   required
                 />
               </div>
 
               {/* Email field */}
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <label htmlFor="email-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
-                    Email Address
-                  </label>
-                  {user && (
-                    <span className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-100/50 dark:border-indigo-500/20">
-                      Account Verified
-                    </span>
-                  )}
-                </div>
+                <label htmlFor="email-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+                  Email Address
+                </label>
                 <input
                   id="email-input"
                   type="email"
@@ -156,11 +137,7 @@ const Contact = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={!!user}
-                  className={`block w-full px-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
-                    user
-                      ? "bg-slate-100/60 dark:bg-indigo-500/5 border border-indigo-200/40 dark:border-indigo-500/20 text-slate-500 dark:text-indigo-300/80 cursor-not-allowed select-none font-medium shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]"
-                      : "bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20"
-                  }`}
+                  className="block w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200 disabled:opacity-75 disabled:cursor-not-allowed"
                   required
                 />
               </div>

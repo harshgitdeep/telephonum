@@ -9,6 +9,9 @@ import Terms from "../pages/Terms";
 import NotFound from "../pages/NotFound";
 import CallDetail from "../pages/Dashboard/CallDetail";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import CallsPage from "../pages/Dashboard/CallsPage";
+import UploadPage from "../pages/Dashboard/UploadPage";
+import AnalyticsPage from "../pages/Dashboard/AnalyticsPage";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +26,9 @@ const AppRoutes = () => {
         <Route path="/terms" element={<Terms />} />
         <Route path="/calls/:id" element={<CallDetail />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/calls" element={<CallsPage />} />
+        <Route path="/upload" element={<UploadPage />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

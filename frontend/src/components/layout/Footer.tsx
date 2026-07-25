@@ -43,42 +43,65 @@ const Footer = () => {
         </div>
 
         {/* Links columns */}
-        <div className="lg:col-span-7 grid grid-cols-3 gap-6">
-          <div className="text-left flex flex-col gap-4">
-            <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Product</h5>
-            <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
-              <button onClick={() => handleNavClick("features")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">Features</button>
-              <button onClick={() => handleNavClick("how-it-works")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">Documentation</button>
-              <span className="text-sm text-slate-500 dark:text-gray-400 flex items-center gap-1.5 justify-start">
-                <span className="line-through text-slate-350 dark:text-gray-655">Pricing</span>
-                <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
-                  Free
+        {user ? (
+          <div className="lg:col-span-7 flex flex-col sm:flex-row justify-end items-start sm:items-center gap-6 sm:gap-10 text-sm">
+            <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition-colors font-semibold text-slate-500 dark:text-gray-400">
+              Dashboard
+            </Link>
+            <Link to="/calls" className="hover:text-slate-900 dark:hover:text-white transition-colors font-semibold text-slate-500 dark:text-gray-400">
+              Calls
+            </Link>
+            <Link to="/analytics" className="hover:text-slate-900 dark:hover:text-white transition-colors font-semibold text-slate-500 dark:text-gray-400">
+              Analytics
+            </Link>
+            <Link to="/upload" className="hover:text-slate-900 dark:hover:text-white transition-colors font-semibold text-slate-500 dark:text-gray-400">
+              Upload
+            </Link>
+          </div>
+        ) : (
+          <div className="lg:col-span-7 grid grid-cols-3 gap-6">
+            <div className="text-left flex flex-col gap-4">
+              <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Product</h5>
+              <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
+                <button onClick={() => handleNavClick("features")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">Features</button>
+                <button onClick={() => handleNavClick("how-it-works")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">Documentation</button>
+                <span className="text-sm text-slate-500 dark:text-gray-400 flex items-center gap-1.5 justify-start">
+                  <span className="line-through text-slate-350 dark:text-gray-655">Pricing</span>
+                  <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
+                    Free
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
-          </div>
 
-          <div className="text-left flex flex-col gap-4">
-            <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Company</h5>
-            <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
-              <button onClick={() => handleNavClick("benefits")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">About</button>
-              <Link to="/contact" className="hover:text-slate-955 dark:hover:text-white transition-colors">Contact</Link>
+            <div className="text-left flex flex-col gap-4">
+              <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Company</h5>
+              <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
+                <button onClick={() => handleNavClick("benefits")} className="hover:text-slate-900 dark:hover:text-white transition-colors text-left cursor-pointer">About</button>
+                <Link to="/contact" className="hover:text-slate-955 dark:hover:text-white transition-colors">Contact</Link>
+              </div>
             </div>
-          </div>
 
-          <div className="text-left flex flex-col gap-4">
-            <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Legal</h5>
-            <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
-              <Link to="/privacy" className="hover:text-slate-955 dark:hover:text-white transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-slate-955 dark:hover:text-white transition-colors">Terms of Service</Link>
+            <div className="text-left flex flex-col gap-4">
+              <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Legal</h5>
+              <div className="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-gray-400">
+                <Link to="/privacy" className="hover:text-slate-955 dark:hover:text-white transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-slate-955 dark:hover:text-white transition-colors">Terms of Service</Link>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 border-t border-slate-200 dark:border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-gray-500">
-        <div>
-          &copy; 2026 Telephonum AI. All rights reserved.
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 border-t border-slate-200 dark:border-white/5 pt-8 flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-gray-500">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
+          <span>&copy; 2026 Telephonum AI. All rights reserved.</span>
+          <span className="hidden sm:inline text-slate-300 dark:text-white/10">|</span>
+          <span>Telephonum v0.2.0</span>
+          <span className="hidden sm:inline text-slate-300 dark:text-white/10">|</span>
+          <span>Last Updated: July 2026</span>
+          <span className="hidden sm:inline text-slate-300 dark:text-white/10">|</span>
+          <span>Made by <span className="font-semibold text-indigo-500 dark:text-indigo-400">Harshdeep Singh</span></span>
         </div>
         <div className="flex gap-6">
           <Link to="/terms" className="hover:text-slate-955 dark:hover:text-white transition-colors">Terms & Service</Link>

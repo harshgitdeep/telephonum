@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const handleNavClick = (sectionId: string) => {
     const isShowingDashboard = location.pathname === "/" && user && !location.search.includes("landing") && !location.state?.scrollTo;
-    
+
     if (location.pathname === "/" && !isShowingDashboard) {
       const element = document.getElementById(sectionId);
       element?.scrollIntoView({ behavior: "smooth" });
@@ -33,32 +33,61 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
-          <button 
-            onClick={() => handleNavClick("features")} 
-            className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
-          >
-            Features
-          </button>
-          <button 
-            onClick={() => handleNavClick("how-it-works")} 
-            className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
-          >
-            How It Works
-          </button>
-          <button 
-            onClick={() => handleNavClick("benefits")} 
-            className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
-          >
-            About
-          </button>
-          <span className="text-sm text-slate-500 dark:text-gray-400 flex items-center gap-1.5">
-            <span className="line-through text-slate-350 dark:text-gray-600">Pricing</span>
-            <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
-              Free
+        {!user ? (
+          <nav className="hidden md:flex items-center gap-8">
+            <button
+              onClick={() => handleNavClick("features")}
+              className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => handleNavClick("how-it-works")}
+              className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              How It Works
+            </button>
+            <button
+              onClick={() => handleNavClick("benefits")}
+              className="text-sm text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              About
+            </button>
+            <span className="text-sm text-slate-500 dark:text-gray-400 flex items-center gap-1.5">
+              <span className="line-through text-slate-350 dark:text-gray-600">Pricing</span>
+              <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
+                Free
+              </span>
             </span>
-          </span>
-        </nav>
+          </nav>
+        ) : (
+          <nav className="hidden md:flex items-center gap-8">
+            <Link
+              to="/"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/calls"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Calls
+            </Link>
+            <Link
+              to="/analytics"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Analytics
+            </Link>
+            <Link
+              to="/upload"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Upload
+            </Link>
+          </nav>
+        )}
 
         <div className="flex items-center gap-4">
           <button
@@ -70,16 +99,10 @@ const Navbar = () => {
           </button>
           {user ? (
             <>
-              <Link 
-                to="/" 
-                className="text-sm font-semibold text-indigo-650 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
-              >
-                Dashboard
-              </Link>
               <span className="text-sm font-medium text-slate-700 dark:text-gray-300">
                 Hi, {user.name || user.email}
               </span>
-              <button 
+              <button
                 onClick={() => {
                   logout();
                   navigate("/");
@@ -94,8 +117,8 @@ const Navbar = () => {
               <Link to="/login" className="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">
                 Login
               </Link>
-              <Link 
-                to="/register" 
+              <Link
+                to="/register"
                 className="relative group px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-[0_0_15px_rgba(99,102,241,0.15)] dark:shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_20px_rgba(99,102,241,0.35)] dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.55)]"
               >
                 Sign Up
