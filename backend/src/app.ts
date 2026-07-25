@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
+import callRoutes from "./modules/calls/call.routes";
 import cors from "cors";
 
 const app = express();
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/calls", callRoutes);
 
 export default app;
