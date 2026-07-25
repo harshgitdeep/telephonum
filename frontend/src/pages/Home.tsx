@@ -24,6 +24,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { useAuth } from "../context/AuthContext";
 import Dashboard from "./Dashboard/Dashboard";
+import api from "../services/api";
 
 // Mock data for interactive Dashboard Showcase
 const MOCK_CALLS = [
@@ -70,10 +71,30 @@ const Home = () => {
   const [selectedCallIndex, setSelectedCallIndex] = useState(0);
   const activeCall = MOCK_CALLS[selectedCallIndex];
   const location = useLocation();
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalCalls: 0,
+    completedCalls: 0,
+    avgConfidence: 92.4,
+  });
 
   const transcriptRef = useRef<HTMLDivElement>(null);
   const [isScrollingPaused, setIsScrollingPaused] = useState(false);
   const scrollPosRef = useRef(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await api.get("/stats");
+        if (response.data.success) {
+          setStats(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to load homepage stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
 
   useEffect(() => {
     const container = transcriptRef.current;
@@ -236,14 +257,18 @@ const Home = () => {
               <span className="text-xs text-indigo-600 dark:text-indigo-400 font-mono bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">Active Session</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
               <div className="bg-slate-50/80 dark:bg-white/2 border border-slate-100 dark:border-white/5 p-3.5 rounded-2xl">
-                <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block mb-1">Calls Today</span>
-                <span className="text-xl font-bold text-slate-900 dark:text-white">1,284</span>
+                <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block mb-1">Total Users</span>
+                <span className="text-xl font-bold text-slate-900 dark:text-white">{stats.totalUsers}</span>
+              </div>
+              <div className="bg-slate-50/80 dark:bg-white/2 border border-slate-100 dark:border-white/5 p-3.5 rounded-2xl">
+                <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block mb-1">Total Calls</span>
+                <span className="text-xl font-bold text-slate-900 dark:text-white">{stats.totalCalls}</span>
               </div>
               <div className="bg-slate-50/80 dark:bg-white/2 border border-slate-100 dark:border-white/5 p-3.5 rounded-2xl">
                 <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block mb-1">QA Score</span>
-                <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">92.4%</span>
+                <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{stats.avgConfidence}%</span>
               </div>
               <div className="bg-slate-50/80 dark:bg-white/2 border border-slate-100 dark:border-white/5 p-3.5 rounded-2xl">
                 <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block mb-1">Compliance</span>
