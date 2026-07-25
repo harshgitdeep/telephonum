@@ -1,30 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, PhoneCall, MapPin, Send } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
+import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 
 const Contact = () => {
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email);
+    }
+    if (user?.name) {
+      setName(user.name);
+    }
+  }, [user]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate sending message
-    setTimeout(() => {
+    try {
+      const response = await api.post("/contact", {
+        name,
+        email,
+        subject,
+        message,
+      });
+
+      if (response.data.success) {
+        toast.success("Thank you! Your message has been sent successfully.");
+        setSubject("");
+        setMessage("");
+        if (!user) {
+          setName("");
+          setEmail("");
+        }
+      }
+    } catch (error: any) {
+      console.error("Failed to send contact message:", error);
+      toast.error(error.response?.data?.message || "Failed to send message. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      toast.success("Thank you! Your message has been sent successfully.");
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-    }, 1200);
+    }
   };
 
   return (
@@ -38,7 +64,7 @@ const Contact = () => {
         <div className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-purple-600/[0.04] dark:bg-purple-600/10 blur-[130px] pointer-events-none" />
 
         {/* Contact Info Panel */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
@@ -60,34 +86,15 @@ const Contact = () => {
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white text-base">Support & Inquiries</h4>
-                <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">support@telephonum.ai</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">harshzone3@gmail.com</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-white dark:bg-white/2 border border-slate-200/80 dark:border-white/5 shadow-sm dark:shadow-none">
-              <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 text-purple-600 dark:text-purple-400">
-                <PhoneCall className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-white text-base">Call Support</h4>
-                <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">+1 (800) 555-0199</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-white dark:bg-white/2 border border-slate-200/80 dark:border-white/5 shadow-sm dark:shadow-none">
-              <div className="p-3 rounded-xl bg-pink-50 dark:bg-pink-500/10 border border-pink-100 dark:border-pink-500/20 text-pink-600 dark:text-pink-400">
-                <MapPin className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-white text-base">Headquarters</h4>
-                <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">100 Pine Street, San Francisco, CA 94111</p>
-              </div>
-            </div>
           </div>
         </motion.div>
 
         {/* Contact Form Card */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
@@ -104,32 +111,56 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-left">
               {/* Name field */}
               <div className="flex flex-col gap-2">
-                <label htmlFor="name-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
-                  Full Name
-                </label>
+                <div className="flex justify-between items-center">
+                  <label htmlFor="name-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+                    Full Name
+                  </label>
+                  {user && (
+                    <span className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-100/50 dark:border-indigo-500/20">
+                      Account Verified
+                    </span>
+                  )}
+                </div>
                 <input
                   id="name-input"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Harshdeep Singh"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  disabled={!!user}
+                  className={`block w-full px-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
+                    user
+                      ? "bg-slate-100/60 dark:bg-indigo-500/5 border border-indigo-200/40 dark:border-indigo-500/20 text-slate-500 dark:text-indigo-300/80 cursor-not-allowed select-none font-medium shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]"
+                      : "bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20"
+                  }`}
                   required
                 />
               </div>
 
               {/* Email field */}
               <div className="flex flex-col gap-2">
-                <label htmlFor="email-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
-                  Email Address
-                </label>
+                <div className="flex justify-between items-center">
+                  <label htmlFor="email-input" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+                    Email Address
+                  </label>
+                  {user && (
+                    <span className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-100/50 dark:border-indigo-500/20">
+                      Account Verified
+                    </span>
+                  )}
+                </div>
                 <input
                   id="email-input"
                   type="email"
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                  disabled={!!user}
+                  className={`block w-full px-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
+                    user
+                      ? "bg-slate-100/60 dark:bg-indigo-500/5 border border-indigo-200/40 dark:border-indigo-500/20 text-slate-500 dark:text-indigo-300/80 cursor-not-allowed select-none font-medium shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]"
+                      : "bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20"
+                  }`}
                   required
                 />
               </div>
