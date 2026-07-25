@@ -30,7 +30,7 @@ const Register = () => {
         email,
         password,
       });
-      
+
       toast.success("Account Created Successfully!");
       navigate("/login");
     } catch (error: any) {
@@ -53,7 +53,7 @@ const Register = () => {
         <div className="absolute bottom-[-20%] right-[-20%] w-[500px] h-[500px] rounded-full bg-purple-600/[0.04] dark:bg-purple-600/10 blur-[130px] pointer-events-none" />
 
         {/* Main card */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
@@ -80,7 +80,7 @@ const Register = () => {
                   <input
                     id="name-input"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Harshdeep Singh"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="block w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-transparent focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"

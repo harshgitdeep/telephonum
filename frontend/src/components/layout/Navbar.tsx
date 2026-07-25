@@ -11,11 +11,13 @@ const Navbar = () => {
   const location = useLocation();
 
   const handleNavClick = (sectionId: string) => {
-    if (location.pathname === "/") {
+    const isShowingDashboard = location.pathname === "/" && user && !location.search.includes("landing") && !location.state?.scrollTo;
+    
+    if (location.pathname === "/" && !isShowingDashboard) {
       const element = document.getElementById(sectionId);
       element?.scrollIntoView({ behavior: "smooth" });
     } else {
-      navigate("/", { state: { scrollTo: sectionId } });
+      navigate("/?landing=true", { state: { scrollTo: sectionId } });
     }
   };
 
@@ -68,6 +70,12 @@ const Navbar = () => {
           </button>
           {user ? (
             <>
+              <Link 
+                to="/" 
+                className="text-sm font-semibold text-indigo-650 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              >
+                Dashboard
+              </Link>
               <span className="text-sm font-medium text-slate-700 dark:text-gray-300">
                 Hi, {user.name || user.email}
               </span>

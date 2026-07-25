@@ -1,15 +1,19 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   const handleNavClick = (sectionId: string) => {
-    if (location.pathname === "/") {
+    const isShowingDashboard = location.pathname === "/" && user && !location.search.includes("landing") && !location.state?.scrollTo;
+    
+    if (location.pathname === "/" && !isShowingDashboard) {
       const element = document.getElementById(sectionId);
       element?.scrollIntoView({ behavior: "smooth" });
     } else {
-      navigate("/", { state: { scrollTo: sectionId } });
+      navigate("/?landing=true", { state: { scrollTo: sectionId } });
     }
   };
 

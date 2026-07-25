@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
@@ -137,7 +137,7 @@ const Home = () => {
     );
   }
 
-  if (user) {
+  if (user && !location.state?.scrollTo && !location.hash && !new URLSearchParams(location.search).get("landing")) {
     return <Dashboard />;
   }
 
