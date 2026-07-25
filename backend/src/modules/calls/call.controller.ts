@@ -24,17 +24,14 @@ class CallController {
         return;
       }
 
-      const call = await callService.createCall({
-        userId: req.user!.userId,
-        originalFileName: file.originalname,
-        storedFileName: file.filename,
-        mimeType: file.mimetype,
-        size: file.size,
-      });
+      const call = await callService.processUploadedCall(
+        req.user!.userId,
+        file
+      );
 
       res.status(201).json({
         success: true,
-        message: "Audio uploaded successfully.",
+        message: "Audio uploaded and processed successfully.",
         data: call,
       });
     } catch (error) {

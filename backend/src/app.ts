@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
 import callRoutes from "./modules/calls/call.routes";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 
@@ -13,6 +14,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Serve uploaded audio files statically
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.get("/", (req, res) => {
   res.status(200).json({

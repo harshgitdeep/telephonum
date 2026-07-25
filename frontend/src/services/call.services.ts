@@ -7,9 +7,24 @@ export interface CallData {
   storedFileName: string;
   mimeType: string;
   size: number;
-  status: "UPLOADED" | "PROCESSING" | "COMPLETED" | "FAILED";
+  status: "UPLOADED" | "TRANSCRIBING" | "PROCESSING" | "COMPLETED" | "FAILED";
   createdAt: string;
   updatedAt: string;
+  transcription?: {
+    transcriptId: string;
+    provider: string;
+    text: string;
+    language?: string;
+    confidence?: number;
+    duration?: number;
+    completedAt?: string;
+    utterances?: Array<{
+      speaker: string;
+      text: string;
+      start: number;
+      end: number;
+    }>;
+  };
 }
 
 export interface CallResponse<T> {

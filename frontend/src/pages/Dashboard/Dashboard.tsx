@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Upload, Trash2, FileAudio, Calendar, HardDrive, RefreshCw } from "lucide-react";
+import { Upload, Trash2, FileAudio, Calendar, HardDrive, RefreshCw, Eye } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { uploadCall, getCalls, deleteCall, type CallData } from "../../services/call.services";
@@ -8,6 +9,7 @@ import { toast } from "react-toastify";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -249,7 +251,15 @@ export default function Dashboard() {
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-white/10 text-sm text-slate-700 dark:text-gray-300">
                     {calls.map((call) => (
-                      <tr key={call._id} className="hover:bg-slate-50/50 dark:hover:bg-white/2 transition-colors">
+                      <tr
+                        key={call._id}
+                        onClick={() => call.status === "COMPLETED" && navigate(`/calls/${call._id}`)}
+                        className={`transition-colors ${
+                          call.status === "COMPLETED"
+                            ? "hover:bg-indigo-50/30 dark:hover:bg-indigo-500/5 cursor-pointer"
+                            : "hover:bg-slate-50/50 dark:hover:bg-white/2"
+                        }`}
+                      >
                         <td className="py-4 px-6 font-medium text-slate-900 dark:text-white truncate max-w-[200px]">
                           {call.originalFileName}
                         </td>
@@ -269,7 +279,7 @@ export default function Dashboard() {
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold ${
                             call.status === "COMPLETED"
                               ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                              : call.status === "PROCESSING"
+                              : call.status === "TRANSCRIBING" || call.status === "PROCESSING"
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400"
                               : call.status === "FAILED"
                               ? "bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400"
@@ -279,13 +289,30 @@ export default function Dashboard() {
                           </span>
                         </td>
                         <td className="py-4 px-6 text-right whitespace-nowrap">
-                          <button
-                            onClick={() => handleDelete(call._id)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                            title="Delete record"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-end gap-1.5">
+                            {call.status === "COMPLETED" && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/calls/${call._id}`);
+                                }}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                                title="View details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(call._id);
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                              title="Delete record"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
