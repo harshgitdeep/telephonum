@@ -1,5 +1,7 @@
 # 🚀 Telephonum
 
+! backend yet to be deployed
+
 ### AI-powered Conversation Intelligence Platform for Customer Support Teams
 
 Telephonum is a full-stack AI application that helps customer support teams automatically analyze customer conversations. It combines speech recognition and large language models to generate transcripts, evaluate call quality, detect customer sentiment, identify compliance issues, and provide actionable coaching insights.
